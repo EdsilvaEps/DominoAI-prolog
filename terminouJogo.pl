@@ -66,7 +66,7 @@ pegaJogaveis(M1,M2,M3,M4, EstadoMesa):-
 % a partir das mãos de todos os jogadores e da mesa
 % verifica, de acordo com os casos 1 ou 2 se o jogo terminou
 % se sim, retorna true na variavel Terminou e dados sobre o vencedor
-terminouJogo(_,_,_,_,mesa([],[],[],[]),false,-1).
+terminouJogo(_,_,_,_,mesa([],[],[],[]),false,ninguem).
 terminouJogo(mao(M1),mao(M2),mao(M3),mao(M4),Mesa, Terminou, Vencedor):-
   verificaMaos(M1,M2,M3,M4,Fin,Winner),
 
@@ -80,7 +80,17 @@ terminouJogo(mao(M1),mao(M2),mao(M3),mao(M4),Mesa, Terminou, Vencedor):-
 n :-
   notrace,nodebug.
 
-testeT:-
+test4:-
 
-  terminouJogo(2,3,4,5,mesa([],[],[],[]), Terminou,Vencedor),
+  J1 = mao([(2,3),(0,5),(2,4),(0,4),(0,2),(0,6),(6,6)]),
+
+  J2 = mao([(3,5),(4,4),(1,2),(2,5),(3,4),(5,6),(1,5)]),
+
+  J3 = mao([(1,6),(1,4),(4,6),(0,3),(2,6),(0,0),(3,6)]),
+
+  J4 = mao([(0,1),(1,3),(3,3),(2,2),(4,5),(5,5),(1,1)]),
+
+  M1 = mesa([(6,6)],[(3,6),(6,6)],[(5,6),(6,6)],[(6,6)]),
+
+  terminouJogo(J1,J2,J3,J4,M1, Terminou,Vencedor),
   write(Terminou),nl,write(Vencedor).
