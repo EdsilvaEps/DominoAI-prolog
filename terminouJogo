@@ -1,0 +1,86 @@
+:- use_module(library(lists)).
+
+[qualEstado].
+[jogaveis].
+
+% Questao 5
+% Condicoes de termino de jogo:
+%
+% CASO 1: Uma das mãos de jogadores está vazia,
+% o que significa que este conseguiu
+% colocar todas as suas peças na mesa.
+%
+% CASO 2: Nenhum jogador possui peças jogáveis,
+% neste caso ninguém pode colocar mais peças
+% na mesa, e então vence o jogador que possui
+% menos pontos em sua mão.
+
+% verifica se alguma das mãos está vazia
+verificaMaos([],_,_,_,true,jogador1).
+verificaMaos(_,[],_,_,true,jogador2).
+verificaMaos(_,_,[],_,true,jogador3).
+verificaMaos(_,_,_,[],true,jogador4).
+verificaMaos(_,_,_,_,false,-1).
+
+verificaJogaveis([],[],[],[]).
+
+% soma todos os pontos das peças da mão dada
+% e retorna o resultado.
+contaPontosAux([], Aux, Aux).
+contaPontosAux([(X,Y) | T], Aux, Sum):-
+  Soma is Aux + X + Y,
+  contaPontosAux(T, Soma, Sum).
+
+% verifica se o item dado é o menor da lista.
+minLista([],_).
+minLista([H|T], Item):-
+   (Item > H -> false
+   ;minLista(T,Item)).
+
+% usa a função contaPontosAux para pegar as somas
+% de todas as mãos e então usa a função minLista
+% para determinar qual jogador tem a menor quantidade de
+% pontos.
+contaPontos(M1,M2,M3,M4,Vencedor):-
+  contaPontosAux(M1, 0, PontosJ1),
+  contaPontosAux(M2, 0, PontosJ2),
+  contaPontosAux(M3, 0, PontosJ3),
+  contaPontosAux(M4, 0, PontosJ4),
+  Pontos = [PontosJ1,PontosJ2,PontosJ3,PontosJ4],
+  (minLista(Pontos, PontosJ1) -> Vencedor = jogador1
+  ;minLista(Pontos, PontosJ2) -> Vencedor = jogador2
+  ;minLista(Pontos, PontosJ3) -> Vencedor = jogador3
+  ;minLista(Pontos, PontosJ4) -> Vencedor = jogador4
+  ; Vencedor = -1).
+
+% usa a função jogaveis para pegar as peças jogáveis de
+% cada mão, e em seguida verifica se nenhuma das mãos possui
+% peças jogáveis.
+pegaJogaveis(M1,M2,M3,M4, EstadoMesa):-
+  jogaveis(M1,EstadoMesa,J1),
+  jogaveis(M2,EstadoMesa,J2),
+  jogaveis(M3,EstadoMesa,J3),
+  jogaveis(M4,EstadoMesa,J4),
+  verificaJogaveis(J1,J2,J3,J4).
+
+% a partir das mãos de todos os jogadores e da mesa
+% verifica, de acordo com os casos 1 ou 2 se o jogo terminou
+% se sim, retorna true na variavel Terminou e dados sobre o vencedor
+terminouJogo(_,_,_,_,mesa([],[],[],[]),false,-1).
+terminouJogo(mao(M1),mao(M2),mao(M3),mao(M4),Mesa, Terminou, Vencedor):-
+  verificaMaos(M1,M2,M3,M4,Fin,Winner),
+
+  (Fin -> Terminou = true, Vencedor = Winner
+  ;qualEstado(Mesa, Estado),
+   pegaJogaveis(mao(M1),mao(M2),mao(M3),mao(M4),Estado) ->
+      contaPontos(M1,M2,M3,M4,W),
+      Terminou = true, Vencedor = W
+  ; Terminou = false, Vencedor = ninguem).
+
+n :-
+  notrace,nodebug.
+
+testeT:-
+
+  terminouJogo(2,3,4,5,mesa([],[],[],[]), Terminou,Vencedor),
+  write(Terminou),nl,write(Vencedor).
