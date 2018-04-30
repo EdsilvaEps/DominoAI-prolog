@@ -39,42 +39,43 @@ contaPts(JogadorIndex, [dupla(A),dupla(B)], estado(P1,P2,P3,P4), NovoPlacar):-
     NDuplaPts is DuplaPts + Soma,
     NDupla = dupla(NDuplaPts),
     replace([dupla(A),dupla(B)], DuplaIndex, NDupla, NovoPlacar),
-    write("Dupla "),write(DuplaIndex),write(" marcou "),write(Soma),write(" pts"),nl
+    write("Dupla "),write(DuplaIndex),write(" marcou "),write(Soma),write(" pts"),nl,
+    write(NovoPlacar),nl
   ;NovoPlacar = [dupla(A),dupla(B)]).
 
 
-jogaEConta(JogadorIndex, equipes(J1,J2,J3,J4), Mesa, NovaEquipe, NovaMesa):-
+jogaEConta(JogadorIndex, equipes(J1,J2,J3,J4), Mesa, Placar,  NovaEquipe, NovaMesa, NovoPlacar):-
   E = [J1,J2,J3,J4],
   nth0(JogadorIndex, E, Mao),
   joga(Mao, Mesa, NovaMao, NovaMesa),
   replace(E, JogadorIndex, NovaMao, [N1,N2,N3,N4]),
   NovaEquipe = equipes(N1,N2,N3,N4),
   (Mao == NovaMao ->
-    write('Jogador '),write(JogadorIndex),write(' passou'),nl,nl
-    %NovoPlacar = Placar
+    write('Jogador '),write(JogadorIndex),write(' passou'),nl,nl,
+    NovoPlacar = Placar
   ;qualEstado(NovaMesa,Q),
    write('Jogador '),write(JogadorIndex),write(' jogou'),nl,
-   %contaPts(JogadorIndex, Placar, Q, NovoPlacar),
+   contaPts(JogadorIndex, Placar, Q, NovoPlacar),
    %NovoPlacar = Placar,
    write('Nova Mesa é '),write(Q),nl,nl).
 
 
 
-move(_, equipes(J1,J2,J3,J4), Mesa, true,_,_,_,_):-
+move(_, equipes(J1,J2,J3,J4), Mesa, _, true, _, _, _, _, _):-
   terminouJogo(J1,J2,J3,J4,Mesa, _, Vencedor),
   terminou(Vencedor).
 
-move(JogadorIndex, Equipes, Mesa, false, ProxJogadorIndex, NovaEquipe, NovaMesa, NovoTerminou):-
+move(JogadorIndex, Equipes, Mesa, Placar, false, ProxJogadorIndex, NovaEquipe, NovaMesa, NovoPlacar, NovoTerminou):-
   proximoJogador(JogadorIndex, ProxJogadorIndex),
-  jogaEConta(JogadorIndex, Equipes, Mesa, equipes(N1,N2,N3,N4), NovaMesa),
+  jogaEConta(JogadorIndex, Equipes, Mesa, Placar, equipes(N1,N2,N3,N4), NovaMesa, NovoPlacar),
   terminouJogo(N1,N2,N3,N4,NovaMesa, NovoTerminou,_),
   NovaEquipe = equipes(N1,N2,N3,N4).
 
-fazJogada(Jogador, Equipes, Mesa, true):-
+fazJogada(Jogador, Equipes, Mesa, Placar, true):-
   write('Jogo terminou'),nl,
-  move(Jogador, Equipes, Mesa, true, _, _, _, _).
-fazJogada(Jogador, Equipes, Mesa, T):-
-  move(Jogador, Equipes, Mesa, T, ProxJogador, NovaEquipe, NovaMesa, Terminou),
+  move(Jogador, Equipes, Mesa, Placar, true, _, _, _, _, _).
+fazJogada(Jogador, Equipes, Mesa, Placar, T):-
+  move(Jogador, Equipes, Mesa, Placar, T, ProxJogador, NovaEquipe, NovaMesa, NovoPlacar, Terminou),
   write('Terminou? '),write(Terminou),nl,
   write('Proximo: jogador '),write(ProxJogador),nl,
   %write('Nova Mesa é '),write(NovaMesa),nl,
@@ -83,7 +84,7 @@ fazJogada(Jogador, Equipes, Mesa, T):-
   %move(ProxJogador, NovaEquipe, NovaMesa, ProxJogador2, NovaEquipe2, NovaMesa2, Terminou),
   %write(NovaEquipe2),write('-'),write(NovaMesa2),nl.
 
-  fazJogada(ProxJogador, NovaEquipe, NovaMesa, Terminou).
+  fazJogada(ProxJogador, NovaEquipe, NovaMesa, NovoPlacar, Terminou).
 
 
 
@@ -132,6 +133,6 @@ play:-
 
   distribuiPedras(Equipes),
   Mesa = mesa([],[],[],[]),
-  %Placar = [dupla(0),dupla(0)],
+  Placar = [dupla(0),dupla(0)],
 
-  fazJogada(0, Equipes,Mesa, false).
+  fazJogada(0, Equipes,Mesa,Placar, false).
