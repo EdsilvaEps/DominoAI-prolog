@@ -4,7 +4,8 @@
 
 %terminou(pontos(P1,P2,P3,P4) Vencedor):-
 terminou(Vencedor):-
-    write("\nTERMINOU O JOGO! "),write(Vencedor),write(" EH O VENCEDOR!"),nl.
+    qualDupla(Vencedor, Dupla),
+    write("\nTERMINOU O JOGO! A Dupla "),write(Dupla),write(" eh a vencedora!"),nl.
     %write("\n\n"),write("Jogador1 - "),write(P1),write("\n"),
     %write("Jogador2 - "),write(P2),nl,
     %write("Jogador3 - "),write(P3),nl,
@@ -38,9 +39,11 @@ contaPts(JogadorIndex, [dupla(A),dupla(B)], estado(P1,P2,P3,P4), NovoPlacar):-
     nth0(DuplaIndex, Placar, DuplaPts),
     NDuplaPts is DuplaPts + Soma,
     NDupla = dupla(NDuplaPts),
-    replace([dupla(A),dupla(B)], DuplaIndex, NDupla, NovoPlacar),
+    replace([dupla(A),dupla(B)], DuplaIndex, NDupla, [dupla(C),dupla(D)]),
+    NovoPlacar = [dupla(C),dupla(D)],
     write("Dupla "),write(DuplaIndex),write(" marcou "),write(Soma),write(" pts"),nl,
-    write(NovoPlacar),nl
+    write("Dupla 0 - "),write(C),nl,
+    write("Dupla 1 - "),write(D),nl
   ;NovoPlacar = [dupla(A),dupla(B)]).
 
 
@@ -72,15 +75,15 @@ move(JogadorIndex, Equipes, Mesa, Placar, false, ProxJogadorIndex, NovaEquipe, N
   NovaEquipe = equipes(N1,N2,N3,N4).
 
 fazJogada(Jogador, Equipes, Mesa, Placar, true):-
-  write('Jogo terminou'),nl,
+  %write('Jogo terminou'),nl,
   move(Jogador, Equipes, Mesa, Placar, true, _, _, _, _, _).
 fazJogada(Jogador, Equipes, Mesa, Placar, T):-
   move(Jogador, Equipes, Mesa, Placar, T, ProxJogador, NovaEquipe, NovaMesa, NovoPlacar, Terminou),
-  write('Terminou? '),write(Terminou),nl,
+  %write('Terminou? '),write(Terminou),nl,
   write('Proximo: jogador '),write(ProxJogador),nl,
   %write('Nova Mesa é '),write(NovaMesa),nl,
   %read(_),
-  write(NovaEquipe),write('-'),nl,
+  %write(NovaEquipe),write('-'),nl,
   %move(ProxJogador, NovaEquipe, NovaMesa, ProxJogador2, NovaEquipe2, NovaMesa2, Terminou),
   %write(NovaEquipe2),write('-'),write(NovaMesa2),nl.
 

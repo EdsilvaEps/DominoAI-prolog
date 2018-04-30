@@ -16,10 +16,10 @@
 % menos pontos em sua mão.
 
 % verifica se alguma das mãos está vazia
-verificaMaos([],_,_,_,true,jogador1).
-verificaMaos(_,[],_,_,true,jogador2).
-verificaMaos(_,_,[],_,true,jogador3).
-verificaMaos(_,_,_,[],true,jogador4).
+verificaMaos([],_,_,_,true,0).
+verificaMaos(_,[],_,_,true,1).
+verificaMaos(_,_,[],_,true,2).
+verificaMaos(_,_,_,[],true,3).
 verificaMaos(_,_,_,_,false,-1).
 
 verificaJogaveis([],[],[],[]).
@@ -47,10 +47,10 @@ contaPontos(M1,M2,M3,M4,Vencedor):-
   contaPontosAux(M3, 0, PontosJ3),
   contaPontosAux(M4, 0, PontosJ4),
   Pontos = [PontosJ1,PontosJ2,PontosJ3,PontosJ4],
-  (minLista(Pontos, PontosJ1) -> Vencedor = jogador1
-  ;minLista(Pontos, PontosJ2) -> Vencedor = jogador2
-  ;minLista(Pontos, PontosJ3) -> Vencedor = jogador3
-  ;minLista(Pontos, PontosJ4) -> Vencedor = jogador4
+  (minLista(Pontos, PontosJ1) -> Vencedor = 0
+  ;minLista(Pontos, PontosJ2) -> Vencedor = 1
+  ;minLista(Pontos, PontosJ3) -> Vencedor = 2
+  ;minLista(Pontos, PontosJ4) -> Vencedor = 3
   ; Vencedor = -1).
 
 % usa a função jogaveis para pegar as peças jogáveis de
@@ -66,7 +66,7 @@ pegaJogaveis(M1,M2,M3,M4, EstadoMesa):-
 % a partir das mãos de todos os jogadores e da mesa
 % verifica, de acordo com os casos 1 ou 2 se o jogo terminou
 % se sim, retorna true na variavel Terminou e dados sobre o vencedor
-terminouJogo(_,_,_,_,mesa([],[],[],[]),false,ninguem).
+terminouJogo(_,_,_,_,mesa([],[],[],[]),false,-1).
 terminouJogo(mao(M1),mao(M2),mao(M3),mao(M4),Mesa, Terminou, Vencedor):-
   verificaMaos(M1,M2,M3,M4,Fin,Winner),
 
@@ -75,7 +75,7 @@ terminouJogo(mao(M1),mao(M2),mao(M3),mao(M4),Mesa, Terminou, Vencedor):-
    pegaJogaveis(mao(M1),mao(M2),mao(M3),mao(M4),Estado) ->
       contaPontos(M1,M2,M3,M4,W),
       Terminou = true, Vencedor = W
-  ; Terminou = false, Vencedor = ninguem).
+  ; Terminou = false, Vencedor = -1).
 
 n :-
   notrace,nodebug.
