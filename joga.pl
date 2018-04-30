@@ -28,21 +28,20 @@ proximaPonta(0,1).
 proximaPonta(1,2).
 proximaPonta(2,3).
 
-verificaPecas([(6,6) | _], [], NovaPonta):- % CHECK!
+verificaPecas([(6,6) | _], [], NovaPonta):- 
   NovaPonta = [(6,6)].
 verificaPecas([(X,Y) | _], [(P1,P2) | PTail], NovaPonta):-
   (X == P1 ->
     append([(Y,X)], [(P1,P2) | PTail], NovaPonta)
-    %NovaPonta = [(Y,X) | (P1,P2), PTail]
   ;Y == P1 ->
     append([(X,Y)], [(P1,P2) | PTail], NovaPonta)
-    %NovaPonta = [(X,Y) | (P1,P2), PTail]
   ;NovaPonta = [(P1,P2) | PTail]).
 
 % recebe a mao (lista de pecas da mao), a mesa (lista de pontas da mesa ou lista de listas), a ponta
 % que estamos verificando (index na lista de pontas) e retorna a nova mesa (lista de pontas)
 verificaPontas(Mao, Mesa, PontaAtual,  NovaMesa):-
-  proximaPonta(PontaAtual, ProximaPontaIndex), % registra qual será a proxima ponta a ser verificada
+
+
   nth0(PontaAtual, Mesa, Ponta), % pega a ponta que verificaremos pelo index
   % chama a funcao verificaPecas para colocar a peca na ponta, se esta combinar
   verificaPecas(Mao, Ponta, NovaPonta),
@@ -56,7 +55,8 @@ verificaPontas(Mao, Mesa, PontaAtual,  NovaMesa):-
     replace(Mesa, PontaAtual, NovaPonta, NovaMesa)
   % se nenhuma das condicoes anteriores foi satisfeita, então esta ponta não recebeu nova peca
   % e precisamos verificar a proxima ponta
-  ;verificaPontas(Mao, Mesa, ProximaPontaIndex, NovaMesa)).
+  ;proximaPonta(PontaAtual, ProximaPontaIndex), % registra qual será a proxima ponta a ser verificada)
+   verificaPontas(Mao, Mesa, ProximaPontaIndex, NovaMesa)).
 
 joga(mao(Mao), mesa(P1,P2,P3,P4), NovaMao, NovaMesa):-
   E = [P1,P2,P3,P4], % coloca as listas de pontas em uma lista para processamento
